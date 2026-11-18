@@ -1,0 +1,26 @@
+
+# .NET build files
+**/bin/
+**/obj/
+
+# Visual Studio
+**/.vs/
+*.user
+*.suo
+
+# React / Node
+**/node_modules/
+**/dist/
+
+# Database files
+**/*.db-shm
+**/*.db-wal
+
+# Secrets and local settings
+**/appsettings.Development.json
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
