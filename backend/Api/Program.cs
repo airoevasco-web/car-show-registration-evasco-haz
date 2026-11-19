@@ -9,6 +9,11 @@ using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(
+        new System.Text.Json.Serialization.JsonStringEnumConverter());
+});
 
 // Database - SQLite
 builder.Services.AddDbContext<IAppDbContext, AppDbContext>(options =>
