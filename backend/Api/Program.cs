@@ -1,6 +1,7 @@
-
+using Api.Features.Registrations;
 using Application.Abstractions.Data;
 using Application.Abstractions.Messaging;
+using Application.Features.Registrations.CreateRegistration;
 using Domain.Common;
 using FluentValidation;
 using Infrastructure.Persistence;
@@ -16,9 +17,10 @@ builder.Services.AddDbContext<IAppDbContext, AppDbContext>(options =>
 // Validators
 builder.Services.AddValidatorsFromAssembly(typeof(IAppDbContext).Assembly);
 
-// Handlers
-// builder.Services.AddScoped<ICommandHandler<TCommand, Result<TResponse>>, TCommandHandler>();
-// builder.Services.AddScoped<IQueryHandler<TQuery, Result<TResponse>>, TQueryHandler>();
+// Command handlers
+builder.Services.AddScoped<
+    ICommandHandler<CreateRegistrationCommand, Result<CreateRegistrationResponse>>,
+    CreateRegistrationCommandHandler>();
 
 // API
 builder.Services.AddEndpointsApiExplorer();
@@ -53,6 +55,5 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/", () => "Welcome to the Car Show Registration API! Go to /scalar/v1 for API documentation.");
 
 // Map endpoints
-// app.MapRegistrationEndpoints();
-
+app.MapRegistrationEndpoints();
 app.Run();
