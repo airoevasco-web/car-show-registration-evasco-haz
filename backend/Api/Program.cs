@@ -1,3 +1,4 @@
+
 using Application.Abstractions.Data;
 using Application.Abstractions.Messaging;
 using Domain.Common;
@@ -8,9 +9,9 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Database
+// Database - SQLite
 builder.Services.AddDbContext<IAppDbContext, AppDbContext>(options =>
-    options.UseInMemoryDatabase("VerticalSliceDb"));
+    options.UseSqlite("Data Source=carshow.db"));
 
 // Validators
 builder.Services.AddValidatorsFromAssembly(typeof(IAppDbContext).Assembly);
@@ -25,8 +26,8 @@ builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer((document, _, _) =>
     {
-        document.Info.Title = "Vertical Slice API Template by Elvin Manuel R. Luces, MIT";
-        document.Info.Description = "A simple API demonstrating Vertical Slice Architecture";
+        document.Info.Title = "Car Show Registration API";
+        document.Info.Description = "API for managing Car Show Registrations";
         return Task.CompletedTask;
     });
 });
@@ -38,9 +39,7 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    // dbContext.<Entities>.AddRange(...);
-
-    dbContext.SaveChanges();
+    // Seed registrations will be added here later.
 }
 
 // Configure the HTTP request pipeline
@@ -51,9 +50,9 @@ if (app.Environment.IsDevelopment())
 }
 
 // Root endpoint
-app.MapGet("/", () => "Welcome to the Vertical Slice API! Go to /scalar/v1 for API documentation.");
+app.MapGet("/", () => "Welcome to the Car Show Registration API! Go to /scalar/v1 for API documentation.");
 
 // Map endpoints
-// app.Map{FeatureGroup}Endpoints();
+// app.MapRegistrationEndpoints();
 
 app.Run();
