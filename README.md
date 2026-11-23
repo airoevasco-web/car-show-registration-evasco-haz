@@ -22,8 +22,12 @@ The Car Show Registration System is a web-based application for managing car sho
 - Scalar
 
 ### Frontend
-- React
-- Other frontend technologies will be added by the Frontend Developer.
+
+- React 
+- Vite
+- Tailwind CSS v3
+- Lucide React Icons
+- Fetch API
 
 ## Project Structure
 
