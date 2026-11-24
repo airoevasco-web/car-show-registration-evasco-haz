@@ -15,6 +15,19 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// CORS - Allow React Frontend
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactFrontend", policy =>
+    {
+        policy.WithOrigins(
+                "http://localhost:5173",
+                "http://localhost:5174")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.Converters.Add(
@@ -32,6 +45,7 @@ builder.Services.AddValidatorsFromAssembly(typeof(IAppDbContext).Assembly);
 builder.Services.AddScoped<
     ICommandHandler<CreateRegistrationCommand, Result<CreateRegistrationResponse>>,
     CreateRegistrationCommandHandler>();
+
 builder.Services.AddScoped<
     IQueryHandler<GetRegistrationSummaryQuery, Result<RegistrationSummaryResponse>>,
     GetRegistrationSummaryQueryHandler>();
@@ -47,6 +61,7 @@ builder.Services.AddScoped<
 
 // API
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer((document, _, _) =>
@@ -58,6 +73,9 @@ builder.Services.AddOpenApi(options =>
 });
 
 var app = builder.Build();
+
+// Enable CORS
+app.UseCors("AllowReactFrontend");
 
 // Seed data
 using (var scope = app.Services.CreateScope())
