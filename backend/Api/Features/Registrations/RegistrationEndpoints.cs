@@ -5,6 +5,8 @@ using Api.Common.Extensions;
 using Application.Abstractions.Messaging;
 using Application.Features.Registrations.CreateRegistration;
 using Application.Features.Registrations.GetRegistrations;
+using Application.Features.Registrations.GetRegistrationById;
+using Application.Features.Registrations.GetRegistrationSummary;
 using Domain.Common;
 using Domain.Entities;
 using FluentValidation;
@@ -31,6 +33,19 @@ public static class RegistrationEndpoints
             .WithSummary("Get registrations with optional filters and pagination")
             .Produces<PagedRegistrationsResponse>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest);
+
+        // GET: Get registration summary
+        group.MapGet("/summary", GetRegistrationSummary)
+            .WithName("GetRegistrationSummary")
+            .WithSummary("Get registration and payment summary")
+            .Produces<RegistrationSummaryResponse>(StatusCodes.Status200OK);
+
+        // GET: Get one registration by ID
+        group.MapGet("/{id:guid}", GetRegistrationById)
+            .WithName("GetRegistrationById")
+            .WithSummary("Get a registration by its ID")
+            .Produces<CreateRegistrationResponse>(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status404NotFound);
     }
 
     private static async Task<IResult> CreateRegistration(
@@ -81,6 +96,39 @@ public static class RegistrationEndpoints
 
             return Results.ValidationProblem(errors);
         }
+
+        var result = await handler.HandleAsync(query, cancellationToken);
+
+        if (!result.IsSuccess)
+        {
+            return result.ToProblemDetails();
+        }
+
+        return Results.Ok(result.Value);
+    }
+
+    private static async Task<IResult> GetRegistrationSummary(
+        IQueryHandler<GetRegistrationSummaryQuery, Result<RegistrationSummaryResponse>> handler,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetRegistrationSummaryQuery();
+
+        var result = await handler.HandleAsync(query, cancellationToken);
+
+        if (!result.IsSuccess)
+        {
+            return result.ToProblemDetails();
+        }
+
+        return Results.Ok(result.Value);
+    }
+
+    private static async Task<IResult> GetRegistrationById(
+        Guid id,
+        IQueryHandler<GetRegistrationByIdQuery, Result<CreateRegistrationResponse>> handler,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetRegistrationByIdQuery(id);
 
         var result = await handler.HandleAsync(query, cancellationToken);
 
