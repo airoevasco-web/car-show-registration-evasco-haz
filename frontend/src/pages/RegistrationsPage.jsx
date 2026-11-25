@@ -8,8 +8,8 @@ import Pagination from '../components/Pagination';
 
 // SWITCH DATA SOURCE HERE:
 // Use '../api/sample-data' while developing offline, then switch to '../api/registrationsApi' for the real C# API
-import { getRegistrations, getSummary } from '../api/sample-data';
-// import { getRegistrations, getSummary } from '../api/registrationsApi';
+// import { getRegistrations, getSummary } from '../api/sample-data';
+import { getRegistrations, getSummary } from '../api/registrationsApi';
 
 export default function RegistrationsPage() {
   // Filter & Paging State
